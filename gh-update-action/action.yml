@@ -1,0 +1,17 @@
+name: 'GitHub update'
+description: 'Create and merge pull request'
+
+inputs:
+  user-email:
+    description: 'user.email to configure git'
+    required: true
+  user-name:
+    description: 'user.name to configure git'
+    required: true
+
+runs:
+  using: docker
+  image: Dockerfile
+  args:
+    - ${{ inputs.user-email }}
+    - ${{ inputs.user-name }}
