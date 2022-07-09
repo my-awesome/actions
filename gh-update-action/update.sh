@@ -7,7 +7,7 @@ set -euo pipefail
 PARAM_GIT_USER_EMAIL=${1:?"Missing GIT_USER_EMAIL"}
 PARAM_GIT_USER_NAME=${2:?"Missing GIT_USER_NAME"}
 
-# uses TIMESTAMP and GITHUB_TOKEN from env
+# global env
 GIT_BRANCH="telegram-${TIMESTAMP//:/-}"
 PR_TITLE="[telegram-bot] $TIMESTAMP"
 PR_MESSAGE="Updates telegram: $TIMESTAMP"
@@ -16,6 +16,7 @@ PR_MESSAGE="Updates telegram: $TIMESTAMP"
 
 echo "[+] update"
 echo "[*] TIMESTAMP=${TIMESTAMP}"
+echo "[*] GITHUB_TOKEN=${GITHUB_TOKEN}"
 
 gh --version
 
