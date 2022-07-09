@@ -15,8 +15,12 @@ PR_MESSAGE="Updates telegram: $TIMESTAMP"
 ##############################
 
 echo "[+] update"
+echo "[*] TIMESTAMP=${TIMESTAMP}"
 
 gh --version
+
+# fatal: unsafe repository ('/github/workspace' is owned by someone else)
+git config --global --add safe.directory /github/workspace
 
 # 1 line string
 GIT_STATUS=$(git status)
@@ -26,7 +30,6 @@ if [[ -z "${GIT_STATUS##*nothing to commit*}" ]]; then
   echo "[-] No changes"
 else
   echo "[-] Updating repository ..."
-  echo "[*] TIMESTAMP=${TIMESTAMP}"
 
   # mandatory configs
   git config user.email $GIT_USER_EMAIL
