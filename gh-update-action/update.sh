@@ -4,10 +4,9 @@ set -euo pipefail
 
 ##############################
 
-PARAM_GIT_USER_EMAIL=${1:?"Missing GIT_USER_EMAIL"}
-PARAM_GIT_USER_NAME=${2:?"Missing GIT_USER_NAME"}
+GIT_USER_EMAIL=${1:?"Missing GIT_USER_EMAIL"}
+GIT_USER_NAME=${2:?"Missing GIT_USER_NAME"}
 
-# global env
 GIT_BRANCH="telegram-${TIMESTAMP//:/-}"
 PR_TITLE="[telegram-bot] $TIMESTAMP"
 PR_MESSAGE="Updates telegram: $TIMESTAMP"
@@ -15,12 +14,16 @@ PR_MESSAGE="Updates telegram: $TIMESTAMP"
 ##############################
 
 echo "[+] update"
+# global
 echo "[*] TIMESTAMP=${TIMESTAMP}"
 echo "[*] GITHUB_TOKEN=${GITHUB_TOKEN}"
+# param
+echo "[*] GIT_USER_EMAIL=${GIT_USER_EMAIL}"
+echo "[*] GIT_USER_NAME=${GIT_USER_NAME}"
 
 gh --version
 
-# fatal: unsafe repository ('/github/workspace' is owned by someone else)
+# fixes: unsafe repository ('/github/workspace' is owned by someone else)
 git config --global --add safe.directory /github/workspace
 
 # 1 line string
