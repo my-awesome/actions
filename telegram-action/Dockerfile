@@ -4,7 +4,8 @@ RUN apk upgrade --update && apk --no-cache add \
   bash \
   curl \
   jq \
-  yq
+  yq \
+  unzip
 
 RUN wget -q -o- "https://github.com/ericchiang/pup/releases/download/v0.4.0/pup_v0.4.0_linux_amd64.zip" && \
   unzip "pup_*.zip" -d /usr/local/bin/
