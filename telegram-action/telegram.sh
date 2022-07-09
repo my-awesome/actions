@@ -2,10 +2,6 @@
 
 set -euo pipefail
 
-# ONLY for local testing: "source" loads env variables
-#CURRENT_PATH=$(cd "$(dirname "${BASH_SOURCE[0]}")"; pwd -P)
-#source "${CURRENT_PATH}/telegram.secrets"
-
 ##############################
 
 DATA_PATH=${1:?"Missing DATA_PATH"}
@@ -167,19 +163,22 @@ function append_messages {
 function update_front_matter {
   local INDEX_PATH="content/_index.md"
   # extract yaml between "---" (hugo front matter)
-  local YAML_BEFORE=$(cat ${INDEX_PATH} | cut -d'-' -f 1)
+  local TITLE=$(cat ${INDEX_PATH} | cut -d'-' -f 1 | yq '.title')
   # all unique sorted tags
   local TAGS="$(cat ${DATA_PATH} | jq '[.[] .tags[] .name] | unique')"
   # convert path to slug
   local FOLDERS="$(cat ${DATA_PATH} | jq '[.[] .path | ltrimstr("/") | rtrimstr("/") | gsub("/";"-")] | unique')"
-  
+
   echo "---" > ${INDEX_PATH}
 
   # override tags
-  echo "${YAML_BEFORE}" | yq -y \
+  # --null-input tells jq not to read any input at all (it's used when constructing JSON data from scratch)
+  jq -n \
+    --arg TITLE "${TITLE}" \
     --argjson TAGS "${TAGS}" \
     --argjson FOLDERS "${FOLDERS}" \
-    '{"title": .title, "tags": $TAGS, "folders": $FOLDERS}' >> ${INDEX_PATH}
+    '{"title": $TITLE, "tags": $TAGS, "folders": $FOLDERS}' | \
+    yq -P '.' >> ${INDEX_PATH}
   
   echo "---" >> ${INDEX_PATH}
 }
@@ -187,8 +186,6 @@ function update_front_matter {
 ##############################
 
 function main {
-  echo "[*] DATA_PATH=${DATA_PATH}"
-  echo "[*] TIMESTAMP=${TIMESTAMP}"
   echo "[*] current offset: $(get_latest_offset)"
   echo "[*] current count: $(count_messages)"
 
@@ -203,6 +200,12 @@ function main {
 }
 
 echo "[+] telegram"
+# global
+echo "[*] TIMESTAMP=${TIMESTAMP}"
+echo "[*] TELEGRAM_API_TOKEN=${TELEGRAM_API_TOKEN}"
+echo "[*] TELEGRAM_FROM_ID=${TELEGRAM_FROM_ID}"
+# parameter
+echo "[*] DATA_PATH=${DATA_PATH}"
 
 curl --version
 jq --version

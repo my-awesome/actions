@@ -21,16 +21,27 @@ docker run --rm my-awesome/gh-update-action "my-email" "my-name"
 ```bash
 # an update is considered confirmed as soon as getUpdates
 # is called with an offset higher than the latest update_id
-http https://api.telegram.org/bot<TELEGRAM_API_TOKEN>/getUpdates?offset=<TELEGRAM_OFFSET>
+http https://api.telegram.org/bot${TELEGRAM_API_TOKEN}/getUpdates?offset=${TELEGRAM_OFFSET}
 ```
 
 How to test it locally
 ```bash
-# invoke manully (uncomment "source")
-./telegram-action/telegram.sh "./telegram.json"
+# test
+docker run --rm --name ubuntu -it ubuntu:20.04
+
+# build
+docker build -t my-awesome/telegram-action ./telegram-action
+
+# run
+docker run --rm \
+  --env TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ) \
+  --env-file ./telegram-action/telegram.secrets \
+  --volume ${PWD}/telegram-action/telegram.json:/telegram.json \
+  --volume ${PWD}/telegram-action/content:/content \
+  my-awesome/telegram-action "/telegram.json"
+
 # requires
-cat telegram.secrets 
-#TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+cat ./telegram-action/telegram.secrets
 #TELEGRAM_API_TOKEN=
 #TELEGRAM_FROM_ID=
 ```

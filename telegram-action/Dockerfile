@@ -1,13 +1,18 @@
-FROM alpine:3.16
+FROM ubuntu:20.04
 
-RUN apk upgrade --update && apk --no-cache add \
-  bash \
+ARG YQ_VERSION=4.25.3
+ARG PUP_VERSION=0.4.0
+
+RUN apt-get update && apt-get install -y \
   curl \
-  jq \
-  yq \
-  unzip
+  wget \
+  unzip \
+  jq
 
-RUN wget -q -o- "https://github.com/ericchiang/pup/releases/download/v0.4.0/pup_v0.4.0_linux_amd64.zip" && \
+RUN wget "https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_amd64" -O /usr/bin/yq && \
+  chmod +x /usr/bin/yq
+
+RUN wget -q -o- "https://github.com/ericchiang/pup/releases/download/v${PUP_VERSION}/pup_v${PUP_VERSION}_linux_amd64.zip" && \
   unzip "pup_*.zip" -d /usr/local/bin/
 
 COPY telegram.sh /entrypoint.sh
