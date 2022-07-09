@@ -3,7 +3,8 @@
 set -euo pipefail
 
 # ONLY for local testing: "source" loads env variables
-#source "./telegram.secrets"
+#CURRENT_PATH=$(cd "$(dirname "${BASH_SOURCE[0]}")"; pwd -P)
+#source "${CURRENT_PATH}/telegram.secrets"
 
 ##############################
 
@@ -136,12 +137,12 @@ function add_description {
   # https://stackoverflow.com/questions/36565295/jq-to-replace-text-directly-on-file-like-sed-i
   # https://unix.stackexchange.com/questions/327394/using-a-command-inside-a-sed-substitution
 
-  # curl -s <URL> | ./pup 'title json{}' | jq '.[].text'
+  # curl -s <URL> | pup 'title json{}' | jq '.[].text'
   # echo "TEST" | sed -e "s/TEST/###$(date)###/"
 
   for URL in $(cat ${TMP_DATA} | jq -r '.[].description'); do
     # get html title: assumes always the first
-    DESCRIPTION=$(curl -s ${URL} | ./pup 'title json{}' | jq -r '.[0].text // "INVALID_DESCRIPTION"')
+    DESCRIPTION=$(curl -s ${URL} | pup 'title json{}' | jq -r '.[0].text // "INVALID_DESCRIPTION"')
     # replace url with title and ignore failures
     sed -i -e 's;"description": "'"${URL}"'",;"description": "'"${DESCRIPTION:=INVALID_DESCRIPTION}"'",;g' $TMP_DATA || true
   done
