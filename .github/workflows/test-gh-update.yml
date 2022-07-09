@@ -1,0 +1,27 @@
+name: test-gh-update
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/test-gh-update.yml'
+      - 'gh-update-action/**'
+
+jobs:
+  test-gh-update:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+      - name: Update repository
+        uses: ./gh-update-action
+        with:
+          user-email: "my-awesome-bot@users.noreply.github.com"
+          user-name: "my-awesome-bot"
+        env:
+          TIMESTAMP: ${{ env.TIMESTAMP }}
+          # default secret
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
