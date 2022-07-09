@@ -1,0 +1,31 @@
+name: test-telegram
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/test-telegram.yml'
+      - 'telegram-action/**'
+
+jobs:
+  test-telegram:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set variables
+        # ISO 8601 format (UTC)
+        run: |
+          echo "TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> $GITHUB_ENV
+
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+      - name: Sync Telegram
+        uses: ./telegram-action
+        with:
+          data-path: "./telegram.json"
+        env:
+          TIMESTAMP: ${{ env.TIMESTAMP }}
+          TELEGRAM_API_TOKEN: "INVALID_TELEGRAM_API_TOKEN"
+          TELEGRAM_FROM_ID: "INVALID_TELEGRAM_FROM_ID"
