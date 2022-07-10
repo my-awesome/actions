@@ -27,7 +27,7 @@ http https://api.telegram.org/bot${TELEGRAM_API_TOKEN}/getUpdates?offset=${TELEG
 How to test it locally
 ```bash
 # test
-docker run --rm --name ubuntu -it ubuntu:20.04
+docker run --rm --name ubuntu -it ubuntu:22.04
 
 # build
 docker build -t my-awesome/telegram-action ./telegram-action

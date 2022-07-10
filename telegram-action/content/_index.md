@@ -4,6 +4,6 @@ tags:
   - example
   - github
 folders:
-  - folder-subfolder-nested
+  - folder-subfolder
   - random
 ---

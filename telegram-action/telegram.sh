@@ -150,14 +150,16 @@ function add_description {
 # param #1: <json_array>
 function append_messages {
   local VALUES=$1
-  local OLD_VALUES="$(cat ${DATA_PATH} | jq '.')"
+  local TMP_FILE=$(mktemp --suffix ".json")
 
+  # ISSUE getting "Argument list too long" on large input file when using "--argjson"
+  # solution: read input, append messages, output to a tmp file and replace input
   # mandatory quotes on argjson value
-  jq -n \
-    --argjson OLD_MESSAGES "${OLD_VALUES}" \
+  cat ${DATA_PATH} | jq \
     --argjson NEW_MESSAGES "${VALUES}" \
-    '$OLD_MESSAGES + $NEW_MESSAGES' \
-    > ${DATA_PATH}
+    '. += $NEW_MESSAGES' \
+    > ${TMP_FILE} && \
+    cat ${TMP_FILE} > ${DATA_PATH}
 }
 
 function update_front_matter {
