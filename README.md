@@ -1,9 +1,5 @@
 # actions
 
-Resouces
-* [GitHub Actions](https://docs.github.com/en/actions)
-* [Starter Workflows](https://github.com/actions/starter-workflows)
-
 ## gh-update
 
 * [GitHub CLI](https://cli.github.com/manual)
